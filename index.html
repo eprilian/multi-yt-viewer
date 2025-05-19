@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi YouTube Viewer</title>
+
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    :root {
+      --bg-light: #f4f4f4;
+      --bg-dark: #1e1e1e;
+      --text-light: #000;
+      --text-dark: #fff;
+      --button-bg: #e74c3c;
+      --button-color: #fff;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      padding: 20px;
+      margin: 0;
+      transition: background-color 0.3s, color 0.3s, background-image 0.3s;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    body.dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    body.bg-image {
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    h1 img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .top-controls {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 30px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: '\f185'; /* Sun icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      font-size: 16px;
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      color: #f39c12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #444;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      content: '\f186'; /* Moon icon */
+      color: #3498db;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
+    }
+
+    .video-container {
+      position: relative;
+      resize: both;
+      overflow: hidden;
+      max-width: 100%;
+      min-width: 200px;
+      min-height: 200px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--button-bg);
+      color: var(--button-color);
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    textarea {
+      padding: 8px;
+      width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button {
+      padding: 8px 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 1em;
+      color: #999;
+      transition: color 0.3s;
+    }
+
+    footer a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    footer a:hover {
+      color: #1abc9c;
+    }
+
+    .control-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-controls">
+    <label class="switch" title="Toggle Theme">
+      <input type="checkbox" id="themeToggle" onchange="toggleDarkMode()">
+      <span class="slider"></span>
+    </label>
+    <label for="bgUpload" class="icon-btn" title="Change Background Image">
+      <i class="fas fa-image"></i>
+      <input type="file" id="bgUpload" accept="image/*" onchange="changeBackground(event)">
+    </label>
+  </div>
+
+  <h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube">
+    Multi YouTube Viewer
+  </h1>
+
+  <div class="form-group">
+    <textarea id="videoUrl" placeholder="Paste one or more YouTube URLs here...(separate with ',' for multiple link)" rows="3"></textarea>
+    <button onclick="addVideo()">Add Video</button>
+    <button onclick="clearAll()" style="background-color: var(--button-bg); color: white;">Clear All</button>
+  </div>
+
+  <!-- Control buttons placed below the video input box -->
+  <div class="control-buttons">
+    <button class="icon-btn" onclick="playAll()" title="Play All Videos">
+      <i class="fas fa-play"></i>
+    </button>
+    <button class="icon-btn" onclick="pauseAll()" title="Pause All Videos">
+      <i class="fas fa-pause"></i>
+    </button>
+    <button class="icon-btn" onclick="muteAll()" title="Mute All Videos">
+      <i class="fas fa-volume-mute"></i>
+    </button>
+    <button class="icon-btn" onclick="unmuteAll()" title="Unmute All Videos">
+      <i class="fas fa-volume-up"></i>
+    </button>
+  </div>
+
+  <div class="grid" id="videoGrid"></div>
+
+  <footer>
+    &copy; 2025 <a href="https://github.com/eprilian" target="_blank">
+      <i class="fab fa-github"></i> eprilian
+    </a>. All rights reserved.
+  </footer>
+
+  <script>
+    let players = [];
+    let playerCount = 0;
+    let ytApiLoaded = false;
+
+    function addVideo() {
+      const urlInput = document.getElementById('videoUrl');
+      const rawInput = urlInput.value.trim();
+      if (!rawInput) return;
+
+      const urls = rawInput.split(/[\s,]+/);
+
+      urls.forEach(url => {
+        const videoId = extractVideoId(url);
+        if (videoId) {
+          const container = document.createElement('div');
+          container.className = 'video-container';
+
+          const iframeId = `player-${playerCount++}`;
+          const iframe = document.createElement('iframe');
+          iframe.id = iframeId;
+          iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
+          iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+          iframe.allowFullscreen = true;
+          iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+
+          const removeBtn = document.createElement('button');
+          removeBtn.innerText = 'Remove';
+          removeBtn.className = 'remove-btn';
+          removeBtn.onclick = () => {
+            container.remove();
+            removePlayer(iframeId);
+          };
+
+          container.appendChild(iframe);
+          container.appendChild(removeBtn);
+          document.getElementById('videoGrid').appendChild(container);
+
+          setTimeout(() => {
+            if (window.YT && YT.Player) {
+              const player = new YT.Player(iframeId, {
+                events: {
+                  'onReady': onPlayerReady,
+                  'onError': onPlayerError
+                }
+              });
+              players.push(player);
+            }
+          }, 500);
+        } else {
+          alert(`Invalid YouTube URL: ${url}`);
+        }
+      });
+
+      urlInput.value = '';
+    }
+
+    function removePlayer(iframeId) {
+      players = players.filter(player => player.getIframe().id !== iframeId);
+    }
+
+    function clearAll() {
+      if (confirm("Are you sure you want to remove all videos?")) {
+        document.getElementById('videoGrid').innerHTML = '';
+        players = [];
+      }
+    }
+
+    function playAll() {
+      players.forEach(player => player.playVideo());
+    }
+
+    function pauseAll() {
+      players.forEach(player => player.pauseVideo());
+    }
+
+    function muteAll() {
+      players.forEach(player => player.mute());
+    }
+
+    function unmuteAll() {
+      players.forEach(player => player.unMute());
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    function changeBackground(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.body.style.backgroundImage = `url(${e.target.result})`;
+        document.body.classList.add('bg-image');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function extractVideoId(url) {
+      const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S+?\/)?(?:[A-Za-z0-9_-]{11})|youtu\.be\/([A-Za-z0-9_-]{11}))/);
+      return match ? match[1] : null;
+    }
+
+    function onPlayerReady(event) {}
+
+    function onPlayerError(event) {
+      alert("There was an error loading the video. Please check the URL or if the video is restricted.");
+    }
+
+    function loadYouTubeAPI() {
+      if (!ytApiLoaded) {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        ytApiLoaded = true;
+      }
+    }
+
+    window.onYouTubeIframeAPIReady = function() {
+      console.log('YouTube Iframe API is ready.');
+    };
+
+    loadYouTubeAPI();
+  </script>
+</body>
+</html>
