@@ -2,11 +2,9 @@
 ![image](https://github.com/user-attachments/assets/ff63c16d-13d2-4c6a-9e58-7d76b8df13d8)
 #
 Web base youtube multi view player, build from HTML, CSS and  JavaScript
-#
 
 #
 Feature of the web apps:
-#
 
 1. Add Multiple YouTube Videos
 Users can paste one or more YouTube URLs (separated by commas or spaces) to embed multiple videos dynamically. 🎥➕
