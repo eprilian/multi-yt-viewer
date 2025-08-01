@@ -1,5 +1,5 @@
 # multi-yt-viewer
-![image](https://github.com/user-attachments/assets/ff63c16d-13d2-4c6a-9e58-7d76b8df13d8)
+<img width="1919" height="563" alt="image" src="https://github.com/user-attachments/assets/1f7ababc-2547-4fe7-af84-8379da39aef5" />
 #
 Web base youtube multi view player, build from HTML, CSS and  JavaScript
 
