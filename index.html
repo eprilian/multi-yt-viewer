@@ -7,6 +7,7 @@
 
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" type="image/png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     :root {
@@ -14,20 +15,16 @@
       --bg-dark: #1e1e1e;
       --text-light: #000;
       --text-dark: #fff;
-      --button-bg: #e74c3c;
-      --button-color: #fff;
+      --primary-color: #e74c3c;
+      --secondary-color: #3498db;
     }
 
+    /* Custom CSS for body and typography */
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: var(--bg-light);
       color: var(--text-light);
-      padding: 20px;
-      margin: 0;
-      transition: background-color 0.3s, color 0.3s, background-image 0.3s;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      transition: background-color 0.3s, color 0.3s;
     }
 
     body.dark-mode {
@@ -42,43 +39,21 @@
       background-position: center;
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    h1 img {
-      width: 40px;
-      height: 40px;
-    }
-
-    .top-controls {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
+    /* Custom CSS for the theme toggle slider */
     .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 30px;
+        position: relative;
+        display: inline-block;
+        width: 64px;
+        height: 32px;
     }
-
+    
     .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
+        opacity: 0;
+        width: 0;
+        height: 0;
     }
 
-    .slider {
+    .switch .slider {
       position: absolute;
       cursor: pointer;
       top: 0;
@@ -87,17 +62,17 @@
       bottom: 0;
       background-color: #ccc;
       transition: .4s;
-      border-radius: 30px;
+      border-radius: 34px;
     }
 
-    .slider:before {
+    .switch .slider:before {
       position: absolute;
       content: '\f185'; /* Sun icon */
       font-family: "Font Awesome 5 Free";
       font-weight: 900;
       font-size: 16px;
-      height: 24px;
-      width: 24px;
+      height: 26px;
+      width: 26px;
       left: 3px;
       bottom: 3px;
       background-color: white;
@@ -109,257 +84,493 @@
       border-radius: 50%;
     }
 
-    input:checked + .slider {
-      background-color: #444;
+    .switch input:checked + .slider {
+      background-color: #3498db;
     }
 
-    input:checked + .slider:before {
-      transform: translateX(30px);
+    .switch input:checked + .slider:before {
+      transform: translateX(32px);
       content: '\f186'; /* Moon icon */
       color: #3498db;
     }
 
-    .icon-btn {
-      background: none;
-      border: none;
-      font-size: 1.5em;
+    /* Custom CSS for the range sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+      border-radius: 4px;
+    }
+
+    input[type="range"]:hover {
+      opacity: 1;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
       cursor: pointer;
-      color: inherit;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      transform: scale(1);
+      transition: transform 0.2s, background-color 0.2s;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 15px;
+    input[type="range"]::-webkit-slider-thumb:active {
+      transform: scale(1.2);
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--primary-color);
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      transform: scale(1);
+      transition: transform 0.2s, background-color 0.2s;
     }
 
-    .video-container {
+    input[type="range"]::-moz-range-thumb:active {
+      transform: scale(1.2);
+    }
+    
+    .dark-mode input[type="range"] {
+      background: #444;
+    }
+
+    /* CSS for maintaining 16:9 aspect ratio */
+    .video-aspect-ratio {
       position: relative;
-      resize: both;
-      overflow: hidden;
-      max-width: 100%;
-      min-width: 200px;
-      min-height: 200px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
     }
 
-    iframe {
+    .video-aspect-ratio iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
-      border: none;
     }
 
-    .remove-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background: var(--button-bg);
-      color: var(--button-color);
-      border: none;
-      border-radius: 4px;
-      padding: 4px 8px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .form-group {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    textarea {
-      padding: 8px;
-      width: 300px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-
-    button {
-      padding: 8px 16px;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background-color: #3498db;
+    /* Message box styling */
+    .message-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
       color: white;
-      transition: background-color 0.2s;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: none; /* Initially hidden */
+      text-align: center;
+    }
+
+    .message-box .button-group {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .message-box button.ok-btn {
+      background-color: #f1c40f; /* Yellow for OK */
+    }
+
+    .message-box button.no-btn {
+      background-color: #2ecc71; /* Green for No */
+    }
+
+    /* New button styling for top controls */
+    .top-control-btn {
+        background-color: #f0f0f0;
+        border: none;
+        border-radius: 50%;
+        padding: 10px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s;
+    }
+
+    .top-control-btn:hover {
+        background-color: #e0e0e0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .dark-mode .top-control-btn {
+        background-color: #333;
+        box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .dark-mode .top-control-btn:hover {
+        background-color: #444;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    /* General button styling with animations */
+    button {
+      transition: all 0.2s ease-in-out;
+      transform: scale(1);
     }
 
     button:hover {
-      background-color: #2980b9;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Dark mode styling for input fields */
+    .dark-mode .url-input {
+      background-color: #444;
+      color: white;
+      border-color: #555;
+    }
+    
+    .quality-selector-container {
+        display: none;
     }
 
-    input[type="file"] {
-      display: none;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 1em;
-      color: #999;
-      transition: color 0.3s;
-    }
-
-    footer a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    footer a:hover {
-      color: #1abc9c;
-    }
-
-    .control-buttons {
-      display: flex;
+    /* Dynamic grid layouts */
+    .grid {
+      display: grid;
+      gap: 1rem;
       justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
+      margin: 0 auto;
+    }
+
+    .grid.one-video {
+      grid-template-columns: minmax(400px, 1000px);
+    }
+
+    .grid.two-videos {
+      grid-template-columns: repeat(2, minmax(400px, 1fr));
+      max-width: 1600px;
+    }
+    
+    .grid.two-videos .video-container {
+        width: 100%;
+    }
+    
+    .grid.three-videos {
+        grid-template-columns: repeat(3, minmax(400px, 1fr));
+        max-width: 1600px;
+    }
+
+    .grid.multi-videos {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+    
+    .url-input-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 48rem;
+    }
+
+    .url-input-wrapper .url-input {
+        flex-grow: 1;
     }
   </style>
 </head>
-<body>
-  <div class="top-controls">
+<body class="p-4 md:p-8">
+  <div class="top-controls flex justify-end items-center gap-4 flex-wrap mb-6">
+    <!-- Theme Toggle Switch -->
     <label class="switch" title="Toggle Theme">
       <input type="checkbox" id="themeToggle" onchange="toggleDarkMode()">
       <span class="slider"></span>
     </label>
-    <label for="bgUpload" class="icon-btn" title="Change Background Image">
+    <!-- Background Upload Button -->
+    <label for="bgUpload" class="icon-btn text-2xl cursor-pointer text-gray-800 dark:text-gray-200 transition-colors duration-300">
       <i class="fas fa-image"></i>
-      <input type="file" id="bgUpload" accept="image/*" onchange="changeBackground(event)">
+      <input type="file" id="bgUpload" accept="image/*" onchange="changeBackground(event)" class="hidden">
     </label>
   </div>
 
-  <h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube">
+  <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" alt="YouTube" class="w-10 h-10">
     Multi YouTube Viewer
   </h1>
 
-  <div class="form-group">
-    <textarea id="videoUrl" placeholder="Paste one or more YouTube URLs here...(separate with ',' for multiple link)" rows="3"></textarea>
-    <button onclick="addVideo()">Add Video</button>
-    <button onclick="clearAll()" style="background-color: var(--button-bg); color: white;">Clear All</button>
+  <!-- Dynamic input field container -->
+  <div id="url-input-container" class="form-group flex flex-col items-center justify-center gap-4 mb-6">
+    <!-- Initial input field -->
+    <div class="url-input-wrapper">
+      <input type="text" placeholder="Paste YouTube URL here..." class="url-input p-3 rounded-lg border border-gray-300 dark:border-gray-700">
+      <button onclick="addInput()" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-300 shadow-md flex-shrink-0">
+        <i class="fas fa-plus"></i> Add More
+      </button>
+    </div>
   </div>
 
-  <!-- Control buttons placed below the video input box -->
-  <div class="control-buttons">
-    <button class="icon-btn" onclick="playAll()" title="Play All Videos">
-      <i class="fas fa-play"></i>
-    </button>
-    <button class="icon-btn" onclick="pauseAll()" title="Pause All Videos">
-      <i class="fas fa-pause"></i>
-    </button>
-    <button class="icon-btn" onclick="muteAll()" title="Mute All Videos">
-      <i class="fas fa-volume-mute"></i>
-    </button>
-    <button class="icon-btn" onclick="unmuteAll()" title="Unmute All Videos">
-      <i class="fas fa-volume-up"></i>
-    </button>
+  <div class="main-controls-container flex flex-col items-center gap-4 mb-6">
+    <div class="flex gap-2">
+      <button onclick="loadVideos()" class="px-6 py-2 bg-blue-500 text-white rounded-lg transition-colors duration-300 hover:bg-blue-600 shadow-md">Load Videos</button>
+      <label for="file-upload" class="px-6 py-2 bg-purple-500 text-white rounded-lg cursor-pointer transition-colors duration-300 hover:bg-purple-600 shadow-md">
+        <i class="fas fa-file-upload"></i> Load from File
+        <input id="file-upload" type="file" accept=".txt" class="hidden" onchange="loadVideosFromFile(this.files)">
+      </label>
+      <button onclick="clearAll()" class="px-6 py-2 bg-red-500 text-white rounded-lg transition-colors duration-300 hover:bg-red-600 shadow-md">Clear All</button>
+    </div>
+    <!-- Global Play/Pause and Mute/Unmute Buttons and Quality Selector -->
+    <div class="control-buttons flex justify-center items-center gap-4">
+      <button id="playPauseBtn" onclick="togglePlayPause()" class="top-control-btn text-gray-800 dark:text-gray-200">
+        <i class="fas fa-play"></i>
+      </button>
+      <button id="muteToggleBtn" onclick="toggleMute()" class="top-control-btn text-gray-800 dark:text-gray-200">
+        <i class="fas fa-volume-up"></i>
+      </button>
+    </div>
+
+    <!-- Global Volume Slider -->
+    <div class="w-full max-w-xl flex items-center gap-2">
+      <i class="fas fa-volume-down text-gray-700 dark:text-gray-300"></i>
+      <input type="range" id="volumeSlider" min="0" max="100" value="100" class="flex-grow">
+      <i class="fas fa-volume-up text-gray-700 dark:text-gray-300"></i>
+    </div>
+
+    <!-- Global Timeline Slider -->
+    <div class="w-full max-w-xl flex items-center gap-2">
+      <span class="text-gray-700 dark:text-gray-300 text-sm" id="currentTimeDisplay">0:00</span>
+      <input type="range" id="timelineSlider" min="0" max="100" value="0" class="flex-grow">
+      <span class="text-gray-700 dark:text-gray-300 text-sm" id="durationDisplay">0:00</span>
+    </div>
   </div>
 
-  <div class="grid" id="videoGrid"></div>
+  <div id="videoGrid"></div>
 
-  <footer>
-    &copy; 2025 <a href="https://github.com/eprilian/multi-yt-viewer" target="_blank">
+  <footer class="text-center mt-8 text-sm text-gray-500 dark:text-gray-400">
+    &copy; 2025 <a href="https://eprilian.github.io/multi-yt-viewer/" target="_blank" class="text-blue-500 hover:text-blue-400 transition-colors duration-300">
       <i class="fab fa-github"></i> eprilian
     </a>. All rights reserved.
   </footer>
 
+  <!-- Custom message box for alerts -->
+  <div class="message-box" id="messageBox">
+    <p id="messageText"></p>
+    <div class="button-group">
+      <button class="ok-btn px-4 py-2 rounded-lg">OK</button>
+      <button class="no-btn px-4 py-2 rounded-lg">No</button>
+    </div>
+  </div>
+
   <script>
+    // Global state variables
     let players = [];
     let playerCount = 0;
     let ytApiLoaded = false;
+    let updateTimelineInterval;
 
-    function addVideo() {
-      const urlInput = document.getElementById('videoUrl');
-      const rawInput = urlInput.value.trim();
-      if (!rawInput) return;
+    // A simple custom message box to replace alert() and confirm()
+    function showMessageBox(message, onConfirm = null) {
+      const messageBox = document.getElementById('messageBox');
+      const messageText = document.getElementById('messageText');
+      messageText.textContent = message;
+      messageBox.style.display = 'block';
 
-      const urls = rawInput.split(/[\s,]+/);
-
-      urls.forEach(url => {
-        const videoId = extractVideoId(url);
-        if (videoId) {
-          const container = document.createElement('div');
-          container.className = 'video-container';
-
-          const iframeId = `player-${playerCount++}`;
-          const iframe = document.createElement('iframe');
-          iframe.id = iframeId;
-          iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
-          iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-          iframe.allowFullscreen = true;
-          iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
-
-          const removeBtn = document.createElement('button');
-          removeBtn.innerText = 'Remove';
-          removeBtn.className = 'remove-btn';
-          removeBtn.onclick = () => {
-            container.remove();
-            removePlayer(iframeId);
-          };
-
-          container.appendChild(iframe);
-          container.appendChild(removeBtn);
-          document.getElementById('videoGrid').appendChild(container);
-
-          setTimeout(() => {
-            if (window.YT && YT.Player) {
-              const player = new YT.Player(iframeId, {
-                events: {
-                  'onReady': onPlayerReady,
-                  'onError': onPlayerError
-                }
-              });
-              players.push(player);
-            }
-          }, 500);
-        } else {
-          alert(`Invalid YouTube URL: ${url}`);
+      // Attach a click listener to the OK button to handle confirmation
+      const okButton = messageBox.querySelector('.button-group .ok-btn');
+      okButton.onclick = () => {
+        closeMessageBox();
+        if (onConfirm) {
+          onConfirm();
         }
-      });
-
-      urlInput.value = '';
+      };
+      
+      const noButton = messageBox.querySelector('.button-group .no-btn');
+      noButton.onclick = () => {
+        closeMessageBox();
+      };
+    }
+    
+    function closeMessageBox() {
+        document.getElementById('messageBox').style.display = 'none';
     }
 
+    function clearAllConfirmed() {
+        document.getElementById('messageBox').style.display = 'none';
+        location.reload();
+    }
+
+    // Function to add a new URL input field
+    function addInput() {
+      const container = document.getElementById('url-input-container');
+      const newUrlInputWrapper = document.createElement('div');
+      newUrlInputWrapper.className = 'url-input-wrapper';
+      newUrlInputWrapper.innerHTML = `
+        <input type="text" placeholder="Paste YouTube URL here..." class="url-input p-3 rounded-lg border border-gray-300 dark:border-gray-700">
+        <button onclick="removeInput(this)" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-300 shadow-md flex-shrink-0">
+          <i class="fas fa-minus"></i> Remove
+        </button>
+      `;
+      container.appendChild(newUrlInputWrapper);
+    }
+
+    // Function to remove a URL input field
+    function removeInput(button) {
+      button.parentNode.remove();
+    }
+
+    // Function to load all videos from input fields
+    function loadVideos() {
+      const urlInputs = document.querySelectorAll('.url-input');
+      const validUrls = Array.from(urlInputs).map(input => input.value.trim()).filter(url => url !== '');
+      renderVideos(validUrls);
+
+      // Reset all input fields after loading
+      urlInputs.forEach(input => input.value = '');
+    }
+    
+    // Function to load videos from a text file
+    function loadVideosFromFile(files) {
+      const file = files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        const urls = content.split(/[\s,]+/).filter(url => url.trim() !== '');
+        renderVideos(urls);
+      };
+      reader.readAsText(file);
+    }
+
+    // Central function to render videos to the page
+    function renderVideos(urls) {
+        const videoGrid = document.getElementById('videoGrid');
+        videoGrid.innerHTML = '';
+        players = [];
+        clearInterval(updateTimelineInterval);
+
+        // Set the appropriate class for the grid based on the number of videos
+        if (urls.length === 1) {
+            videoGrid.className = 'grid one-video';
+        } else if (urls.length === 2) {
+            videoGrid.className = 'grid two-videos';
+        } else if (urls.length >= 3) {
+            videoGrid.className = 'grid three-videos';
+        }
+
+        urls.forEach(url => {
+            const videoId = extractVideoId(url);
+            if (videoId) {
+                const container = document.createElement('div');
+                container.className = 'video-container relative rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700';
+
+                const videoAspectRatio = document.createElement('div');
+                videoAspectRatio.className = 'video-aspect-ratio';
+
+                const iframeId = `player-${playerCount++}`;
+                const iframe = document.createElement('iframe');
+                iframe.id = iframeId;
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`;
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+                iframe.allowFullscreen = true;
+                iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
+
+                videoAspectRatio.appendChild(iframe);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.className = 'absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs rounded-md hover:bg-red-600 transition-colors duration-300 z-10';
+                removeBtn.onclick = () => {
+                    container.remove();
+                    removePlayer(iframeId);
+                };
+
+                container.appendChild(videoAspectRatio);
+                container.appendChild(removeBtn);
+                videoGrid.appendChild(container);
+
+                setTimeout(() => {
+                    if (window.YT && YT.Player) {
+                        const player = new YT.Player(iframeId, {
+                            events: {
+                                'onReady': onPlayerReady,
+                                'onError': onPlayerError,
+                                'onStateChange': onPlayerStateChange
+                            }
+                        });
+                        players.push(player);
+                    }
+                }, 500);
+            } else {
+                showMessageBox(`Invalid YouTube URL: ${url}`);
+            }
+        });
+    }
+
+    // Removes a player from the global array
     function removePlayer(iframeId) {
       players = players.filter(player => player.getIframe().id !== iframeId);
     }
 
+    // Clears all videos from the grid and all dynamic input fields
     function clearAll() {
-      if (confirm("Are you sure you want to remove all videos?")) {
-        document.getElementById('videoGrid').innerHTML = '';
-        players = [];
+      showMessageBox("Are you sure you want to remove all videos?", () => {
+        // This will refresh the page and clear everything
+        location.reload();
+      });
+    }
+
+    // Toggles play and pause for all videos and updates the button icon
+    function togglePlayPause() {
+      if (players.length === 0) return;
+
+      // Check the state of the first player to determine the action
+      const firstPlayerState = players[0].getPlayerState();
+      const playPauseBtn = document.getElementById('playPauseBtn');
+
+      if (firstPlayerState === YT.PlayerState.PLAYING) {
+        players.forEach(player => player.pauseVideo());
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+      } else {
+        players.forEach(player => player.playVideo());
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
       }
     }
 
-    function playAll() {
-      players.forEach(player => player.playVideo());
+    // Toggles mute and unmute for all videos and updates the button icon
+    function toggleMute() {
+      if (players.length === 0) return;
+      const muteToggleBtn = document.getElementById('muteToggleBtn');
+
+      // Use the first player's mute status to decide the action
+      const isMuted = players[0].isMuted();
+
+      if (isMuted) {
+        players.forEach(player => player.unMute());
+        muteToggleBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      } else {
+        players.forEach(player => player.mute());
+        muteToggleBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      }
     }
 
-    function pauseAll() {
-      players.forEach(player => player.pauseVideo());
-    }
-
-    function muteAll() {
-      players.forEach(player => player.mute());
-    }
-
-    function unmuteAll() {
-      players.forEach(player => player.unMute());
-    }
-
+    // Toggles dark mode on the body
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
     }
 
+    // Sets a custom background image
     function changeBackground(event) {
       const file = event.target.files[0];
       const reader = new FileReader();
@@ -370,17 +581,35 @@
       reader.readAsDataURL(file);
     }
 
+    // Extracts the YouTube video ID from a URL
     function extractVideoId(url) {
       const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S+?\/)?(?:[A-Za-z0-9_-]{11})|youtu\.be\/([A-Za-z0-9_-]{11}))/);
-      return match ? match[1] : null;
+      return match ? match[1] || match[0] : null;
     }
 
-    function onPlayerReady(event) {}
+    // YouTube API event handlers
+    function onPlayerReady(event) {
+      // Set the initial volume from the slider
+      const volumeSlider = document.getElementById('volumeSlider');
+      event.target.setVolume(volumeSlider.value);
+    }
+
+    function onPlayerStateChange(event) {
+      // Update the timeline and button icons when a player's state changes
+      if (event.data === YT.PlayerState.PLAYING) {
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-pause"></i>';
+        startTimelineUpdate();
+      } else {
+        document.getElementById('playPauseBtn').innerHTML = '<i class="fas fa-play"></i>';
+        clearInterval(updateTimelineInterval);
+      }
+    }
 
     function onPlayerError(event) {
-      alert("There was an error loading the video. Please check the URL or if the video is restricted.");
+      showMessageBox("There was an error loading the video. Please check the URL or if the video is restricted.");
     }
 
+    // Function to load the YouTube Iframe API script
     function loadYouTubeAPI() {
       if (!ytApiLoaded) {
         const tag = document.createElement('script');
@@ -391,11 +620,65 @@
       }
     }
 
+    // Called when the YouTube API script has loaded
     window.onYouTubeIframeAPIReady = function() {
       console.log('YouTube Iframe API is ready.');
     };
 
-    loadYouTubeAPI();
+    // Event listeners for global controls
+    document.addEventListener('DOMContentLoaded', () => {
+      loadYouTubeAPI();
+
+      const volumeSlider = document.getElementById('volumeSlider');
+      const timelineSlider = document.getElementById('timelineSlider');
+
+      // Control global volume
+      volumeSlider.addEventListener('input', (event) => {
+        players.forEach(player => player.setVolume(event.target.value));
+      });
+
+      // Control global timeline
+      timelineSlider.addEventListener('input', (event) => {
+        if (players.length > 0) {
+          const firstPlayer = players[0];
+          const duration = firstPlayer.getDuration();
+          const seekToTime = (event.target.value / 100) * duration;
+          players.forEach(player => player.seekTo(seekToTime, true));
+        }
+      });
+    });
+
+    // Update the timeline slider periodically to reflect video progress
+    function startTimelineUpdate() {
+      if (players.length === 0) return;
+      clearInterval(updateTimelineInterval);
+
+      const timelineSlider = document.getElementById('timelineSlider');
+      const currentTimeDisplay = document.getElementById('currentTimeDisplay');
+      const durationDisplay = document.getElementById('durationDisplay');
+
+      updateTimelineInterval = setInterval(() => {
+        if (players.length > 0) {
+          const firstPlayer = players[0];
+          const currentTime = firstPlayer.getCurrentTime();
+          const duration = firstPlayer.getDuration();
+
+          if (duration > 0) {
+            const progress = (currentTime / duration) * 100;
+            timelineSlider.value = progress;
+            currentTimeDisplay.textContent = formatTime(currentTime);
+            durationDisplay.textContent = formatTime(duration);
+          }
+        }
+      }, 1000);
+    }
+
+    // Helper function to format time in minutes:seconds
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    }
   </script>
 </body>
 </html>
